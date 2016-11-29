@@ -81,11 +81,18 @@ void loop(void)
 	short rx_len;
 	short index=0;
 	uint16_t data16;
-	
+    uint32_t get_time;
+    uint32_t delta_time;
+
+	get_time = millis();
 	rx_len = SubGHz.readData(rx_data,sizeof(rx_data));
+    delta_time = millis() - get_time;
 	
 	if(rx_len>0)
 	{
+		Serial.print("Delta:");
+        Serial.println_long(delta_time,DEC);
+        
 		digitalWrite(BLUE_LED, LOW);
 		SubGHz.getStatus(NULL,&rx);
 		// print time

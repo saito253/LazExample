@@ -70,15 +70,19 @@ void loop(void)
     msg=SubGHz.send(SUBGHZ_PANID, HOST_ADDRESS, &send_data, sizeof(send_data),NULL);// send data
     delta_time = millis() - get_time;
 	digitalWrite(LED,HIGH);														// LED off
+	Serial.print("AES ON Delta:");
     Serial.println_long(delta_time,DEC);
 	SubGHz.msgOut(msg);
 	
+	sleep(1000);																// sleep
+
 	// braodcast preparing data
 	digitalWrite(LED,LOW);														// LED ON
     get_time = millis();
-    msg=SubGHz.send(SUBGHZ_PANID, 0xffff, &send_data, sizeof(send_data),NULL);// send data
+    msg=SubGHz.send(0xffff, 0xffff, &send_data, sizeof(send_data),NULL);// send data
     delta_time = millis() - get_time;
 	digitalWrite(LED,HIGH);														// LED off
+	Serial.print("AES OFF Delta:");
     Serial.println_long(delta_time,DEC);
 	SubGHz.msgOut(msg);
 
