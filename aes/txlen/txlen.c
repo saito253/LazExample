@@ -30,8 +30,8 @@
 #define LED 26						// pin number of Blue LED
 #define SUBGHZ_CH		42			// chael number (frequency)
 #define SUBGHZ_PANID	0xabcd		// panid
-//#define HOST_ADDRESS	0xac54		// distination address
-#define HOST_ADDRESS	0x6670		// distination address
+#define HOST_ADDRESS	0xac54		// distination address
+//#define HOST_ADDRESS	0x6670		// distination address
 
 unsigned char key[]  = {0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
 unsigned char data1[]= {"Welcome to Lazurite Sub-GHz LAPIS Semiconductor Co,.Ltd.Lazurite"};
