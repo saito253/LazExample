@@ -28,7 +28,7 @@
 
 
 #define LED 26						// pin number of Blue LED
-#define SUBGHZ_CH		42			// chael number (frequency)
+#define SUBGHZ_CH		36			// chael number (frequency)
 #define SUBGHZ_PANID	0xabcd		// panid
 #define HOST_ADDRESS	0xac54		// distination address
 //#define HOST_ADDRESS	0x6670		// distination address

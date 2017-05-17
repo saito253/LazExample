@@ -1,5 +1,4 @@
-#include "tx_continue_ide.h"		// Additional Header
-
+#include "tx_ide.h"		// Additional Header
 
 /* FILE NAME: Welcome_SubGHz.c
  * The MIT License (MIT)
@@ -28,9 +27,9 @@
 
 
 #define LED 26						// pin number of Blue LED
-#define SUBGHZ_CH		42			// chael number (frequency)
+#define SUBGHZ_CH		36			// chael number (frequency)
 #define SUBGHZ_PANID	0xabcd		// panid
-#define HOST_ADDRESS	0x6670		// distination address
+#define HOST_ADDRESS	0xac54		// distination address
 
 unsigned char send_data[] = {"Welcome to Lazurite Sub-GHz LAPIS Semiconductor Co,.Ltd.Lazurite"};
 unsigned char key[]       = {0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
@@ -55,6 +54,7 @@ void loop(void)
     uint32_t delta_time;
 
     flg= flg^1;
+    flg=1;
 
     if (flg) {
         SubGHz.setKey(key);

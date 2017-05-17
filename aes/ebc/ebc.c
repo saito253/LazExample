@@ -1,5 +1,5 @@
-#include "api_ide.h"		// Additional Header
-#include "aes.h"
+#include "ebc_ide.h"		// Additional Header
+
 // Additional Header
 
 
@@ -34,19 +34,20 @@
 #define SUBGHZ_PANID	0xffff		// panid
 #define HOST_ADDRESS	0xffff		// distination address
 
-#define BUF_SIZE        80
-unsigned const char plainStr[] = {"Welcome to Lazurite Sub-GHz     LAPIS Semiconductor Co,.Ltd.   "};
-unsigned char key[]            = {0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
-unsigned char iv[]             = {0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f};
-unsigned char plain[BUF_SIZE];
-unsigned char cipher[BUF_SIZE];
-unsigned char dencrypt[BUF_SIZE];
-unsigned char plainLen;
+unsigned const char plain[] = {"Welcome to Lazurite Sub-GHz    "};
+unsigned char key[]         = {0x2b,0x7e,0x15,0x16,0x28,0xae,0xd2,0xa6,0xab,0xf7,0x15,0x88,0x09,0xcf,0x4f,0x3c};
+// initioal vecter table
+unsigned char iv[]          = {0x00,0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f};
+unsigned char tx_buf[50];
+unsigned char cipher[50];
+unsigned char dencrypt[50];
+unsigned char plain_len;
 
-// void AES128_CBC_encrypt_buffer(uint8_t* output, uint8_t* input, uint32_t length, const uint8_t* key, const uint8_t* iv);
-// void AES128_CBC_decrypt_buffer(uint8_t* output, uint8_t* input, uint32_t length, const uint8_t* key, const uint8_t* iv);
+//void AES128_ECB_encrypt(uint8_t* input, const uint8_t* key, uint8_t *output);
+//void AES128_ECB_decrypt(uint8_t* input, const uint8_t* key, uint8_t *output);
 
-uint8_t counter;
+
+uint8_t flg;
 
 void setup(void)
 {
@@ -55,65 +56,60 @@ void setup(void)
 	pinMode(LED,OUTPUT);			// setting of LED
 	digitalWrite(LED,HIGH);			// setting of LED
     Serial.print("=============== Plain test length: 0x");
-    Serial.print_long((long)sizeof(plainStr),HEX);
+    Serial.print_long((long)sizeof(plain),HEX);
 	Serial.print("\r\n");
     Serial.print("=============== Key length: 0x");
     Serial.print_long((long)sizeof(key),HEX);
 	Serial.print("\r\n");
-    plainLen = sizeof(plainStr);
-    counter=0;
-    AES128_setAes(key);
+    plain_len = sizeof(plain);
+    flg=0;
 }
 
 void loop(void)
 {
     uint8_t i;
 
-    Serial.print("--------------Encryption text---------------\r\n");
-    Serial.println_long((long)plainLen,DEC);
-    Serial.print(plainStr);
-	Serial.print("\r\n");
-
-    memset(plain, 0, BUF_SIZE);
-    memset(cipher, 0, BUF_SIZE);
-    memset(dencrypt, 0, BUF_SIZE);
-
-    memcpy(plain, plainStr, plainLen);
-    for(i=0;i<plainLen;i++)
+    Serial.print("--------------Plain text    ----------------\r\n");
+    Serial.print(plain);
+    for(i=0;i<plain_len;i++)
     {
         Serial.print_long((long)plain[i],HEX);
     }
 	Serial.print("\r\n");
 
-//  AES128_CBC_encrypt_buffer(cipher, plain, plainLen, key, iv);
-    AES128_CBC_encrypt(cipher, plain, plainLen, counter);
-    for(i=0;i<plainLen;i++)
+
+    for(i=0;i<plain_len;i++)
+    {
+        Serial.print_long((long)tx_buf[i],HEX);
+    }
+	Serial.print("\r\n");
+    
+    memcpy(tx_buf, plain, plain_len);
+
+    AES128_ECB_encrypt(tx_buf, key, cipher);
+	Serial.print("\r\n");
+    AES128_ECB_encrypt(tx_buf+16, key, cipher+16);
+    Serial.print("--------------Encryption text---------------\r\n");
+    for(i=0;i<50;i++)
     {
 	    Serial.print_long((long)cipher[i],HEX);
     }
 	Serial.print("\r\n");
 
 
+    AES128_ECB_decrypt(cipher, key, dencrypt);
+    AES128_ECB_decrypt(cipher+16, key, dencrypt+16);
     Serial.print("--------------Dencryption text--------------\r\n");
-//  AES128_CBC_decrypt_buffer(dencrypt, cipher, plainLen, key, iv);
-    AES128_CBC_decrypt(dencrypt, cipher, plainLen, counter);
     Serial.print(dencrypt);
 	Serial.print("\r\n");
-
-    for(i=0;i<plainLen;i++)
-    {
-        Serial.print_long((long)plain[i],HEX);
-    }
-	Serial.print("\r\n");
-    
-    for(i=0;i<plainLen;i++)
+    for(i=0;i<plain_len;i++)
     {
 	    Serial.print_long((long)dencrypt[i],HEX);
     }
 	Serial.print("\r\n");
 
-    counter++;
 
     sleep(1000);
 	return;
 }
+
